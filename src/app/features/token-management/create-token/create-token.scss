@@ -1,0 +1,15 @@
+.create-page { max-width: 680px; margin: 0 auto; padding-bottom: 40px; }
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.page-title { font-size: 20px; font-weight: 600; letter-spacing: -.2px; }
+::ng-deep .create-card { .p-card-body { padding: 0; } .p-card-content { padding: 24px 28px; } }
+.form-body { display: flex; flex-direction: column; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; font-weight: 500; }
+.required { color: var(--p-red-500); margin-left: 2px; }
+.field-inline { flex-direction: row; align-items: center; gap: 10px; }
+.inline-title { font-size: 13px; cursor: pointer; }
+::ng-deep .field-input { width: 100%; font-size: 13px !important; }
+::ng-deep .field-select { width: 100%; }
+::ng-deep .field-select .p-select-label { font-size: 13px !important; }
+.form-actions { padding-top: 4px; }
+::ng-deep .create-btn { width: 100%; justify-content: center; }

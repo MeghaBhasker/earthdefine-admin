@@ -1,0 +1,143 @@
+.detail-page { padding-bottom: 32px; }
+
+// ── Breadcrumb ───────────────────────────────────────────────
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; margin-bottom: 16px; color: var(--p-text-muted-color);
+}
+.breadcrumb-link { color: var(--p-primary-color); cursor: pointer; &:hover { text-decoration: underline; } }
+.breadcrumb-sep  { color: var(--p-text-muted-color); }
+.breadcrumb-current { font-weight: 500; color: var(--p-text-color); }
+
+// ── Header row ───────────────────────────────────────────────
+.detail-header {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+}
+.detail-header-left  { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.detail-header-right { display: flex; align-items: center; gap: 8px; }
+.detail-title { font-size: 20px; font-weight: 600; letter-spacing: -.3px; }
+
+// ── Main grid ────────────────────────────────────────────────
+.detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0;
+}
+.left-col, .right-col { display: flex; flex-direction: column; }
+
+// ── Card shared ──────────────────────────────────────────────
+::ng-deep .detail-card {
+  .p-card-body    { padding: 0; }
+  .p-card-content { padding: 0 18px 14px; }
+}
+
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px 0;
+}
+.card-title { font-size: 14px; font-weight: 600; }
+
+// ── Field list ───────────────────────────────────────────────
+.field-list { padding-top: 6px; }
+.field-row {
+  display: flex; align-items: flex-start;
+  padding: 9px 0; border-bottom: 1px solid var(--p-content-border-color);
+  &.no-border { border-bottom: none; }
+}
+.field-label {
+  width: 160px; flex-shrink: 0;
+  font-size: 12px; color: var(--p-text-muted-color); padding-top: 2px;
+}
+.field-value { flex: 1; font-size: 13px; }
+.fw-medium   { font-weight: 500; }
+.muted-sm    { font-size: 12px; color: var(--p-text-muted-color); line-height: 1.6; }
+
+// Key
+.key-display {
+  font-family: monospace; font-size: 12px;
+  background: var(--p-surface-100); padding: 3px 8px;
+  border-radius: 4px; margin-bottom: 4px; display: inline-block;
+}
+.key-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.inline-link {
+  all: unset; font-size: 12px; color: var(--p-primary-color); cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+.dot-sep { color: var(--p-text-muted-color); font-size: 12px; }
+
+// Compact selects
+::ng-deep .compact-select {
+  .p-select-label, .p-datepicker-input { font-size: 12px !important; }
+}
+
+// ── Balance card ─────────────────────────────────────────────
+::ng-deep .detail-card.balance-card .p-card-content { padding: 0 !important; }
+.balance-hero {
+  text-align: center; padding: 20px 18px 18px;
+  .balance-number {
+    font-size: 36px; font-weight: 300; letter-spacing: -1px; margin-bottom: 6px;
+  }
+  .balance-sub { font-size: 12px; color: var(--p-text-muted-color); margin-bottom: 16px; }
+}
+::ng-deep .balance-btn { width: 100%; }
+
+// ── History table ────────────────────────────────────────────
+::ng-deep .history-table {
+  thead tr th {
+    font-size: 11px; font-weight: 600; color: var(--p-text-muted-color);
+    text-transform: uppercase; letter-spacing: .05em; padding: 8px 14px;
+  }
+  tbody tr td {
+    padding: 8px 14px; font-size: 12px;
+    border-bottom: 1px solid var(--p-content-border-color);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+}
+.empty-cell { text-align: center; padding: 20px; color: var(--p-text-muted-color); }
+
+// ── Available attributes ─────────────────────────────────────
+.attr-total-badge {
+  font-size: 12px; color: var(--p-text-muted-color);
+  background: var(--p-surface-100); border-radius: 20px; padding: 2px 10px;
+}
+.attr-group-header {
+  display: flex; align-items: center; gap: 10px; padding: 12px 0 8px;
+}
+.attr-group-title { font-size: 13px; font-weight: 600; cursor: pointer; }
+.attr-group-count {
+  font-size: 11px; color: var(--p-text-muted-color);
+  background: var(--p-surface-100); border-radius: 20px; padding: 1px 8px;
+}
+.attr-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 6px 12px; padding-bottom: 8px;
+}
+.attr-item  { display: flex; align-items: center; gap: 8px; }
+.attr-label { font-size: 12px; color: var(--p-text-color); cursor: pointer; }
+
+// ── Notification settings ────────────────────────────────────
+.notif-grid        { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding-top: 4px; }
+.notif-title       { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.notif-sub         { font-size: 12px; color: var(--p-text-muted-color); margin-bottom: 10px; line-height: 1.5; }
+.notif-section-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.notif-section-sub   { font-size: 12px; color: var(--p-text-muted-color); margin-bottom: 10px; line-height: 1.5; }
+.email-input-row   { display: flex; gap: 8px; align-items: center; }
+::ng-deep .notif-input { width: 100%; font-size: 12px !important; }
+.email-list  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.email-chip  {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--p-surface-100); border-radius: 20px; padding: 3px 10px; font-size: 12px;
+}
+.chip-remove {
+  all: unset; cursor: pointer; font-size: 14px; color: var(--p-text-muted-color); line-height: 1;
+  &:hover { color: var(--p-red-500); }
+}
+
+// ── Gap utility ──────────────────────────────────────────────
+.gap { height: 14px; }
+
+// ── Responsive ───────────────────────────────────────────────
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .notif-grid  { grid-template-columns: 1fr; }
+  .attr-grid   { grid-template-columns: repeat(2,1fr); }
+}

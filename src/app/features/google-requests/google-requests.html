@@ -1,0 +1,225 @@
+<div class="gr-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Google Requests</h1>
+      <p class="page-sub">Recent addresses sent to Google Maps API</p>
+    </div>
+    <div class="header-actions">
+      <p-select
+        [(ngModel)]="dateRange"
+        [options]="dateRanges"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="compact-select"
+      />
+      <p-datepicker
+        *ngIf="dateRange === 'custom'"
+        [(ngModel)]="customDateRange"
+        selectionMode="range"
+        [readonlyInput]="true"
+        placeholder="Select date range"
+        styleClass="compact-datepicker"
+      />
+      <p-button
+        label="Export CSV"
+        icon="pi pi-download"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="exportCsv()"
+      />
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-icon-wrap"><i class="pi pi-send"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-label">Total Requests</div>
+        <div class="kpi-value">{{ totalRequests | number }}</div>
+      </div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon-wrap"><i class="pi pi-check-circle"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-label">Matched</div>
+        <div class="kpi-value">{{ totalHits | number }}</div>
+      </div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-icon-wrap"><i class="pi pi-times-circle"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-label">Wasted</div>
+        <div class="kpi-value">{{ totalMisses | number }}</div>
+      </div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-icon-wrap"><i class="pi pi-dollar"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-label">Est. Cost</div>
+        <div class="kpi-value">{{ estimatedCost }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Usage Panels -->
+  <div class="panels-grid">
+
+    <!-- Google Usage by Token -->
+    <p-card styleClass="panel-card">
+      <ng-template pTemplate="header">
+        <div class="panel-header">
+          <div class="card-title">Google Usage by Token</div>
+          <div class="card-sub">Click a row to filter the table below</div>
+        </div>
+      </ng-template>
+      <div class="token-list">
+        <div
+          *ngFor="let t of tokenUsage"
+          class="token-row"
+          [class.active]="activeTokenFilter === t.token"
+          (click)="filterByToken(t.token)"
+        >
+          <div class="token-info">
+            <div class="token-name">{{ t.token }}</div>
+            <div class="token-org">{{ t.org }}</div>
+          </div>
+          <div class="token-bar-wrap">
+            <div class="token-bar">
+              <div class="bar-hit"   [style.width.%]="hitPct(t)"  [pTooltip]="hitPct(t) + '% hit'">{{ hitPct(t) }}%</div>
+              <div class="bar-miss"  [style.width.%]="missPct(t)" [pTooltip]="missPct(t) + '% miss'">{{ missPct(t) }}%</div>
+            </div>
+          </div>
+          <div class="token-stats">
+            <span class="stat-count">{{ t.total }}</span>
+            <span class="stat-cost">${{ t.cost.toFixed(3) }}</span>
+          </div>
+          <p-button
+            label="Filter"
+            size="small"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="filterByToken(t.token); $event.stopPropagation()"
+            styleClass="filter-btn"
+          />
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Wasted Requests by Strategy -->
+    <p-card styleClass="panel-card">
+      <ng-template pTemplate="header">
+        <div class="panel-header">
+          <div class="card-title">Wasted Requests by Strategy</div>
+          <div class="card-sub">Miss rate per Google strategy</div>
+        </div>
+      </ng-template>
+      <div class="strategy-list">
+        <div *ngFor="let s of strategyUsage" class="strategy-row">
+          <div class="strategy-info">
+            <div class="strategy-name" [title]="s.strategy">{{ s.strategy }}</div>
+            <div *ngIf="wastedPct(s) === 100" class="strategy-warning">
+              <i class="pi pi-exclamation-triangle"></i>
+              100% miss rate —
+              <span class="strategy-link" (click)="goToStrategies()">review in Search Strategies →</span>
+            </div>
+          </div>
+          <div class="strategy-bar-wrap">
+            <div class="strategy-track">
+              <div class="strategy-bar-fill" [style.width.%]="wastedPct(s)"></div>
+            </div>
+            <span class="strategy-pct">{{ wastedPct(s) }}% wasted</span>
+          </div>
+          <div class="strategy-stats">
+            <span class="stat-count">{{ s.wasted }}/{{ s.total }}</span>
+            <span class="stat-cost">${{ s.cost.toFixed(3) }}</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+  </div>
+
+  <!-- Request Table -->
+  <p-card styleClass="table-card">
+    <ng-template pTemplate="header">
+      <div class="table-header">
+        <div class="table-title-row">
+          <div class="card-title">Request Log</div>
+          <span class="results-count">{{ filteredRequests.length | number }} results</span>
+          <span *ngIf="activeTokenFilter" class="active-filter-badge">
+            Filtered: {{ activeTokenFilter }}
+            <button class="clear-filter" (click)="activeTokenFilter = null">×</button>
+          </span>
+        </div>
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <i class="pi pi-search search-icon"></i>
+            <input pInputText [(ngModel)]="filterAddress" placeholder="Search address..." class="search-input" />
+          </div>
+          <p-select [(ngModel)]="filterToken"    [options]="tokenOptions"    optionLabel="label" optionValue="value" styleClass="filter-select" placeholder="All tokens"     />
+          <p-select [(ngModel)]="filterResult"   [options]="resultOptions"   optionLabel="label" optionValue="value" styleClass="filter-select" placeholder="All results"    />
+          <p-select [(ngModel)]="filterStrategy" [options]="strategyOptions" optionLabel="label" optionValue="value" styleClass="filter-select" placeholder="All strategies" />
+        </div>
+      </div>
+    </ng-template>
+
+    <p-table
+      [value]="filteredRequests"
+      [paginator]="true"
+      [rows]="15"
+      [rowsPerPageOptions]="[15, 30, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{first} – {last} of {totalRecords}"
+      styleClass="requests-table"
+      [rowHover]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="sortable-col" (click)="toggleSort()">
+            Time <i class="pi" [ngClass]="sortAsc ? 'pi-sort-amount-up' : 'pi-sort-amount-down'"></i>
+          </th>
+          <th>Address</th>
+          <th>Token</th>
+          <th>Strategy</th>
+          <th style="width:90px">Result</th>
+          <th style="width:80px;text-align:right">Cost</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-r>
+        <tr>
+          <td class="time-cell">{{ r.time | date:'MMM d, y, h:mm a' }}</td>
+          <td>
+            <span class="address-cell" [title]="r.address" [pTooltip]="r.address" tooltipPosition="top">
+              {{ r.address }}
+            </span>
+          </td>
+          <td class="token-cell">{{ r.token }}</td>
+          <td>
+            <span class="strategy-cell" [title]="r.strategy">{{ r.strategy }}</span>
+          </td>
+          <td>
+            <p-tag [value]="r.result" [severity]="resultSeverity(r.result)" [rounded]="true" />
+          </td>
+          <td style="text-align:right" class="cost-cell">${{ r.cost.toFixed(3) }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-cell">
+            <div class="empty-state">
+              <i class="pi pi-search empty-icon"></i>
+              <div class="empty-title">No requests found</div>
+              <div class="empty-sub">Try adjusting your filters or date range</div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+</div>
